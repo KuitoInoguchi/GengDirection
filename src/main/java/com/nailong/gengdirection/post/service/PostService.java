@@ -1,7 +1,9 @@
 package com.nailong.gengdirection.post.service;
 
+import com.nailong.gengdirection.post.dto.PageVO;
+import com.nailong.gengdirection.post.dto.PostCreateDTO;
+import com.nailong.gengdirection.post.dto.PostVO;
 import com.nailong.gengdirection.post.entity.GengPost;
-
 /**
  * 梗帖业务接口。
  *
@@ -10,16 +12,12 @@ import com.nailong.gengdirection.post.entity.GengPost;
  *
  * 已写好 getById 作为参考样例；其它方法照样子补。
  */
-public interface PostService {
-
-    /** 按 id 查单条；找不到时抛 GengException —— 参考样例 */
+public interface PostService{
     GengPost getById(Long id);
 
-    // TODO: Long create(PostCreateDTO dto);
-    //   返回新生成的主键 id；记得校验入参非空
+    Long create(PostCreateDTO dto);
 
-    // TODO: PageVO<PostVO> pagePublished(Integer pageNum, Integer pageSize);
-    //   入参兜底：pageNum<1 -> 1，pageSize 限制在 [1,100]
+    PageVO<PostVO> pagePublished(Integer pageNum, Integer pageSize);
 
-    // TODO: void deleteById(Long id);
+    void deleteById(Long id);
 }

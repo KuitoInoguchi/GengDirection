@@ -1,36 +1,36 @@
 package com.nailong.gengdirection.post.mapper;
 
 import com.nailong.gengdirection.post.entity.GengPost;
+import com.nailong.gengdirection.post.dto.PostVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import java.util.List;
 
 /**
- * 梗帖 Mapper（DAO 层）。
- *
- * 只声明方法签名，真正的 SQL 写在 resources/mapper/PostMapper.xml 里，
- * XML 通过 namespace + id 与本接口的方法一一对应。
- *
- * 已经写好了一个 selectById 作为参考样例（接口 + XML + Service + Controller 一条链都通了）。
- * 其它方法照着 selectById 的写法补上。
+ * 梗帖 Mapper 接口。
+ * 标注 @Mapper 告诉 MyBatis 这是一个数据库操作接口 [cite: 14]。
  */
 @Mapper
 public interface PostMapper {
 
-    /** 按主键查询单条梗帖 —— 参考样例 */
+    /** 按主键查询单条梗帖（参考样例） [cite: 19]。 */
     GengPost selectById(@Param("id") Long id);
 
-    // TODO: int insert(GengPost post);
-    //   提示：XML 里加 useGeneratedKeys="true" keyProperty="id"，自增主键会回填到 entity.id
+    /** 新增梗帖，执行后自增 ID 会回填到 post 对象中 [cite: 31]。 */
+    int insert(GengPost post);
 
-    // TODO: int updateById(GengPost post);
-    //   提示：XML 用 <set> + <if> 做"非空字段才更新"
+    /** 根据 ID 更新梗帖（通常配合 <set> 标签实现选择性更新） [cite: 6]。 */
+    int updateById(GengPost post);
 
-    // TODO: int deleteById(@Param("id") Long id);
+    /** 按 ID 删除记录 */
+    int deleteById(@Param("id") Long id);
 
-    // TODO: List<PostVO> selectPublishedPage(@Param("offset") int offset,
-    //                                       @Param("pageSize") int pageSize);
-    //   提示：JOIN user_info 拿作者昵称 nickname，直接 resultType 到 PostVO
+    /** * 分页查询已发布的梗帖，包含 JOIN 得到的作者昵称 [cite: 4, 6]。
+     * 返回类型为 PostVO，直接匹配前端展示需要的数据 [cite: 10]。
+     */
+    List<PostVO> selectPublishedPage(@Param("offset") int offset,
+                                     @Param("pageSize") int pageSize);
 
-    // TODO: long countPublished();
-    //   提示：配合分页查询统计 status=2 的总数
+    /** 统计状态为“已发布”的帖子总数，用于前端分页显示 */
+    long countPublished();
 }
