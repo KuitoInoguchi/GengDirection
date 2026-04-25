@@ -39,3 +39,7 @@ out/
 # Local secret overrides
 application-local.properties
 .env
+
+# Logs
+logs/
+*.log

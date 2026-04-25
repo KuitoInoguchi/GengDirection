@@ -27,6 +27,7 @@ public class PostServiceImpl implements PostService {
 
     private final PostMapper postMapper;
 
+
     @Override
     public GengPost getById(Long id) {
         if (id == null || id <= 0) {
