@@ -1,5 +1,6 @@
 package com.nailong.gengdirection.post.service.impl;
 
+import com.nailong.gengdirection.exception.GengException;
 import com.nailong.gengdirection.post.dto.PageVO;
 import com.nailong.gengdirection.post.dto.PostCreateDTO;
 import com.nailong.gengdirection.post.dto.PostVO;
@@ -9,7 +10,7 @@ import com.nailong.gengdirection.post.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -19,18 +20,29 @@ public class PostServiceImpl implements PostService {
 
     private final PostMapper postMapper;
 
-
     @Override
     public GengPost getById(Long id) {
-        return postMapper.selectById(id);
+        if (id == null || id <= 0) {
+            throw new GengException("id 非法");
+        }
+        GengPost post = postMapper.selectById(id);
+        if (post == null) {
+            throw new GengException(404, "梗帖不存在: " + id);
+        }
+        return post;
     }
 
     @Override
     public Long create(PostCreateDTO dto) {
-        Assert.notNull(dto, "post payload must not be null");
+        if (dto == null) throw new GengException("请求体为空");
+        if (!StringUtils.hasText(dto.getTitle())) throw new GengException("title 不能为空");
+        if (!StringUtils.hasText(dto.getContent())) throw new GengException("content 不能为空");
+        if (dto.getAuthorId() == null) throw new GengException("authorId 不能为空");
 
         GengPost post = new GengPost();
         BeanUtils.copyProperties(dto, post);
+        post.setHeatScore(0);
+        post.setStatus(2);
         postMapper.insert(post);
         return post.getId();
     }
@@ -55,6 +67,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public void deleteById(Long id) {
+        getById(id);
         postMapper.deleteById(id);
     }
 }

@@ -19,32 +19,20 @@
         VALUES (#{title}, #{content}, #{sourceUrl}, #{authorId}, #{heatScore}, #{status})
     </insert>
 
-    <update id="updateById">
-        UPDATE geng_post
-        <set>
-            <if test="title != null">title = #{title},</if>
-            <if test="content != null">content = #{content},</if>
-            <if test="sourceUrl != null">source_url = #{sourceUrl},</if>
-            <if test="heatScore != null">heat_score = #{heatScore},</if>
-            <if test="status != null">status = #{status},</if>
-            updated_at = NOW()
-        </set>
-        WHERE id = #{id}
-    </update>
-
     <delete id="deleteById">
         DELETE FROM geng_post WHERE id = #{id}
     </delete>
 
     <select id="selectPublishedPage" resultType="com.nailong.gengdirection.post.dto.PostVO">
         SELECT
-            p.*,
+            p.id, p.title, p.content, p.source_url, p.author_id,
+            p.heat_score, p.status, p.created_at, p.updated_at,
             u.nickname AS authorNickname
         FROM geng_post p
-                 INNER JOIN user_info u ON p.author_id = u.id
+        LEFT JOIN user_info u ON u.id = p.author_id
         WHERE p.status = 2
         ORDER BY p.created_at DESC
-            LIMIT #{offset}, #{pageSize}
+        LIMIT #{offset}, #{pageSize}
     </select>
 
     <select id="countPublished" resultType="long">
