@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nailong.gengdirection.interact.mapper.InteractMapper">
+
+    <!-- ========== 评论相关 SQL ========== -->
+
+    <sql id="Comment_Base_Column_List">
+        id, post_id, user_id, content, created_at
+    </sql>
+
+    <!-- 插入评论 -->
+    <insert id="insertComment" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO post_comment (post_id, user_id, content)
+        VALUES (#{postId}, #{userId}, #{content})
+    </insert>
+
+    <!-- 按帖子ID分页查询评论（JOIN用户表拿昵称） -->
+    <select id="selectCommentsByPostId" resultType="com.nailong.gengdirection.interact.dto.CommentVO">
+        SELECT
+            c.id, c.post_id, c.user_id, c.content, c.created_at,
+            u.nickname AS userNickname
+        FROM post_comment c
+                 JOIN user_info u ON u.id = c.user_id
+        WHERE c.post_id = #{postId}
+        ORDER BY c.created_at DESC
+        LIMIT #{offset}, #{pageSize}
+    </select>
+
+    <!-- 统计帖子评论数 -->
+    <select id="countCommentsByPostId" resultType="long">
+        SELECT COUNT(*) FROM post_comment WHERE post_id = #{postId}
+    </select>
+
+    <!-- 删除评论 -->
+    <delete id="deleteCommentById">
+        DELETE FROM post_comment WHERE id = #{id}
+    </delete>
+
+    <!-- 按ID查询评论 -->
+    <select id="selectCommentById" resultType="com.nailong.gengdirection.interact.entity.PostComment">
+        SELECT <include refid="Comment_Base_Column_List"/>
+        FROM post_comment WHERE id = #{id}
+    </select>
+
+    <!-- ========== 收藏相关 SQL ========== -->
+
+    <!-- 添加收藏（INSERT IGNORE 保证幂等） -->
+    <insert id="insertFavorite">
+        INSERT IGNORE INTO user_favorite_post (user_id, post_id)
+        VALUES (#{userId}, #{postId})
+    </insert>
+
+    <!-- 取消收藏 -->
+    <delete id="deleteFavorite">
+        DELETE FROM user_favorite_post
+        WHERE user_id = #{userId} AND post_id = #{postId}
+    </delete>
+
+    <!-- 检查是否已收藏 -->
+    <select id="existsFavorite" resultType="int">
+        SELECT COUNT(*) FROM user_favorite_post
+        WHERE user_id = #{userId} AND post_id = #{postId}
+    </select>
+
+    <!-- 查询用户收藏列表（JOIN帖子表） -->
+    <select id="selectFavoritesByUserId" resultType="com.nailong.gengdirection.post.entity.GengPost">
+        SELECT p.*
+        FROM user_favorite_post uf
+                 JOIN geng_post p ON p.id = uf.post_id
+        WHERE uf.user_id = #{userId}
+        ORDER BY uf.created_at DESC
+        LIMIT #{offset}, #{pageSize}
+    </select>
+
+    <!-- 统计用户收藏数 -->
+    <select id="countFavoritesByUserId" resultType="long">
+        SELECT COUNT(*) FROM user_favorite_post WHERE user_id = #{userId}
+    </select>
+
+</mapper>
