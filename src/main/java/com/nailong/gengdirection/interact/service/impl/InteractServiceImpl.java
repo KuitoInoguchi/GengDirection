@@ -7,6 +7,7 @@ import com.nailong.gengdirection.interact.entity.PostComment;
 import com.nailong.gengdirection.interact.mapper.InteractMapper;
 import com.nailong.gengdirection.interact.service.InteractService;
 import com.nailong.gengdirection.post.dto.PageVO;
+import com.nailong.gengdirection.post.mapper.PostMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ import java.util.List;
 public class InteractServiceImpl implements InteractService {
 
     private final InteractMapper interactMapper;
+    private final PostMapper postMapper;
 
     // ========== 评论实现 ==========
 
@@ -82,18 +84,36 @@ public class InteractServiceImpl implements InteractService {
 
     @Override
     public void favorite(Long postId, Long userId) {
-        if (postId == null || postId <= 0 || userId == null || userId <= 0) {
-            throw new GengException("参数非法");
+        if (postId == null || postId <= 0) {
+            throw new GengException("帖子 ID 非法");
         }
-        // INSERT IGNORE 保证幂等
+        if (userId == null || userId <= 0) {
+            throw new GengException("用户 ID 非法");
+        }
+        
+        // 校验帖子是否存在
+        if (postMapper.selectById(postId) == null) {
+            throw new GengException(404, "帖子不存在: " + postId);
+        }
+        
+        // INSERT IGNORE 保证幂等（重复收藏不报错）
         interactMapper.insertFavorite(userId, postId);
     }
 
     @Override
     public void unfavorite(Long postId, Long userId) {
-        if (postId == null || postId <= 0 || userId == null || userId <= 0) {
-            throw new GengException("参数非法");
+        if (postId == null || postId <= 0) {
+            throw new GengException("帖子 ID 非法");
         }
+        if (userId == null || userId <= 0) {
+            throw new GengException("用户 ID 非法");
+        }
+        
+        // 校验帖子是否存在
+        if (postMapper.selectById(postId) == null) {
+            throw new GengException(404, "帖子不存在: " + postId);
+        }
+        
         interactMapper.deleteFavorite(userId, postId);
     }
 
