@@ -2,48 +2,41 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<!--
-    PostMapper.xml
-
-    规则：
-      - 顶部 <mapper namespace="..."> 必须等于 PostMapper.java 的全限定名。
-      - <select|insert|update|delete> 的 id 必须等于接口里的方法名。
-      - application.properties 里开了 map-underscore-to-camel-case=true，
-        所以下划线列名会自动映射到驼峰字段，不用手写 <resultMap>。
-
-    已写好 selectById 作为参考；其它 SQL 照着这个格式补充。
--->
 <mapper namespace="com.nailong.gengdirection.post.mapper.PostMapper">
 
-    <!-- 公共列：复用，避免 SELECT * -->
     <sql id="Base_Column_List">
         id, title, content, source_url, author_id, heat_score, status, created_at, updated_at
     </sql>
 
-    <!-- 1) 参考样例：按主键查 -->
     <select id="selectById" resultType="com.nailong.gengdirection.post.entity.GengPost">
         SELECT <include refid="Base_Column_List"/>
         FROM geng_post
         WHERE id = #{id}
     </select>
 
-    <!--
-    TODO: <insert id="insert" useGeneratedKeys="true" keyProperty="id"> ... </insert>
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO geng_post (title, content, source_url, author_id, heat_score, status)
+        VALUES (#{title}, #{content}, #{sourceUrl}, #{authorId}, #{heatScore}, #{status})
+    </insert>
 
-    TODO: <update id="updateById"> ... 用 <set> + <if> 做动态非空更新 </update>
+    <delete id="deleteById">
+        DELETE FROM geng_post WHERE id = #{id}
+    </delete>
 
-    TODO: <delete id="deleteById"> DELETE FROM geng_post WHERE id = #{id} </delete>
+    <select id="selectPublishedPage" resultType="com.nailong.gengdirection.post.dto.PostVO">
+        SELECT
+            p.id, p.title, p.content, p.source_url, p.author_id,
+            p.heat_score, p.status, p.created_at, p.updated_at,
+            u.nickname AS authorNickname
+        FROM geng_post p
+        LEFT JOIN user_info u ON u.id = p.author_id
+        WHERE p.status = 2
+        ORDER BY p.created_at DESC
+        LIMIT #{offset}, #{pageSize}
+    </select>
 
-    TODO: <select id="selectPublishedPage" resultType="...PostVO">
-              JOIN user_info u ON u.id = p.author_id
-              WHERE p.status = 2
-              ORDER BY p.created_at DESC
-              LIMIT #{offset}, #{pageSize}
-          </select>
-
-    TODO: <select id="countPublished" resultType="long">
-              SELECT COUNT(*) FROM geng_post WHERE status = 2
-          </select>
-    -->
+    <select id="countPublished" resultType="long">
+        SELECT COUNT(*) FROM geng_post WHERE status = 2
+    </select>
 
 </mapper>
