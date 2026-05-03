@@ -19,6 +19,7 @@ public class PostServiceImpl implements PostService {
 
     private final PostMapper postMapper;
 
+
     @Override
     public GengPost getById(Long id) {
         return postMapper.selectById(id);

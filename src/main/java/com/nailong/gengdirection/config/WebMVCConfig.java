@@ -15,6 +15,5 @@ public class WebMVCConfig implements WebMvcConfigurer {
                 .allowedHeaders("*") // 允许所有的请求头
                 .allowCredentials(true) // 允许携带 Cookie
                 .maxAge(3600); // 预检请求的缓存时间
-
     }
 }

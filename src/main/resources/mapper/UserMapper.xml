@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nailong.gengdirection.user.mapper.UserMapper">
+
+    <!-- 公共列：避免 SELECT *，复用方便 -->
+    <sql id="Base_Column_List">
+        id, username, password_hash, nickname, status, created_at, updated_at
+    </sql>
+
+    <!--
+        新增用户
+        useGeneratedKeys="true" + keyProperty="id"：
+        让 MySQL 自增主键自动塞回 user.id，
+        Service 里 insert 完就能直接 user.getId()
+    -->
+    <insert id="insert"
+            parameterType="com.nailong.gengdirection.user.entity.UserInfo"
+            useGeneratedKeys="true"
+            keyProperty="id">
+        INSERT INTO user_info (username, password_hash, nickname, status)
+        VALUES (#{username}, #{passwordHash}, #{nickname}, #{status})
+    </insert>
+
+    <!-- 按用户名查（登录、注册查重都用） -->
+    <select id="selectByUsername" resultType="com.nailong.gengdirection.user.entity.UserInfo">
+        SELECT <include refid="Base_Column_List"/>
+        FROM user_info
+        WHERE username = #{username}
+    </select>
+
+    <!-- 按 id 查 -->
+    <select id="selectById" resultType="com.nailong.gengdirection.user.entity.UserInfo">
+        SELECT <include refid="Base_Column_List"/>
+        FROM user_info
+        WHERE id = #{id}
+    </select>
+
+</mapper>
