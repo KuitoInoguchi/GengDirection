@@ -48,7 +48,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PageVO<PostVO> pagePublished(Integer pageNum, Integer pageSize) {
+    public PageVO<PostVO> pagePublished(Integer pageNum, Integer pageSize, Long tagId) {
         if (pageNum == null || pageNum < 1) {
             pageNum = 1;
         }
@@ -60,8 +60,8 @@ public class PostServiceImpl implements PostService {
         }
 
         int offset = (pageNum - 1) * pageSize;
-        List<PostVO> records = postMapper.selectPublishedPage(offset, pageSize);
-        long total = postMapper.countPublished();
+        List<PostVO> records = postMapper.selectPublishedPage(offset, pageSize, tagId);
+        long total = postMapper.countPublished(tagId);
         return PageVO.of(pageNum, pageSize, total, records);
     }
 

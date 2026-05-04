@@ -21,10 +21,11 @@ public interface PostMapper {
     /** 按 ID 删除记录 */
     int deleteById(@Param("id") Long id);
 
-    /** 分页查询已发布的梗帖，JOIN 获取作者昵称 */
+    /** 分页查询已发布的梗帖，JOIN 获取作者昵称；tagId 为 null 时不过滤分类 */
     List<PostVO> selectPublishedPage(@Param("offset") int offset,
-                                     @Param("pageSize") int pageSize);
+                                     @Param("pageSize") int pageSize,
+                                     @Param("tagId") Long tagId);
 
-    /** 统计状态为"已发布"的帖子总数 */
-    long countPublished();
+    /** 统计状态为"已发布"的帖子总数；tagId 为 null 时不过滤分类 */
+    long countPublished(@Param("tagId") Long tagId);
 }

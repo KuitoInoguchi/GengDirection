@@ -43,3 +43,14 @@ application-local.properties
 # Logs
 logs/
 *.log
+/.pr_body.md
+/admin_password.txt
+/.claude/settings.local.json
+
+# Frontend
+node_modules/
+geng-frontend/node_modules/
+dist/
+geng-frontend/dist/
+package-lock.json
+geng-frontend/package-lock.json

@@ -30,13 +30,20 @@
             u.nickname AS authorNickname
         FROM geng_post p
         LEFT JOIN user_info u ON u.id = p.author_id
+        <if test="tagId != null">
+        INNER JOIN geng_post_tag pt ON pt.post_id = p.id AND pt.tag_id = #{tagId}
+        </if>
         WHERE p.status = 2
         ORDER BY p.created_at DESC
         LIMIT #{offset}, #{pageSize}
     </select>
 
     <select id="countPublished" resultType="long">
-        SELECT COUNT(*) FROM geng_post WHERE status = 2
+        SELECT COUNT(*) FROM geng_post p
+        <if test="tagId != null">
+        INNER JOIN geng_post_tag pt ON pt.post_id = p.id AND pt.tag_id = #{tagId}
+        </if>
+        WHERE p.status = 2
     </select>
 
 </mapper>

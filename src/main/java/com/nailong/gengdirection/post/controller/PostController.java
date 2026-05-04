@@ -31,8 +31,9 @@ public class PostController {
     @GetMapping
     public Result<PageVO<PostVO>> page(
             @RequestParam(defaultValue = "1") Integer pageNum,
-            @RequestParam(defaultValue = "10") Integer pageSize) {
-        return Result.success(postService.pagePublished(pageNum, pageSize));
+            @RequestParam(defaultValue = "10") Integer pageSize,
+            @RequestParam(required = false) Long tagId) {
+        return Result.success(postService.pagePublished(pageNum, pageSize, tagId));
     }
 
     @PostMapping

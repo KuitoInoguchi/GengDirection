@@ -17,7 +17,7 @@ public interface PostService{
 
     Long create(PostCreateDTO dto);
 
-    PageVO<PostVO> pagePublished(Integer pageNum, Integer pageSize);
+    PageVO<PostVO> pagePublished(Integer pageNum, Integer pageSize, Long tagId);
 
     void deleteById(Long id);
 }
