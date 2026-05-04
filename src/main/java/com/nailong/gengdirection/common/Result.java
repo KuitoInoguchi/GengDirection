@@ -6,9 +6,9 @@ import lombok.Data;
  */
 @Data
 public class Result<T> {
-    private Integer StatusCode;
-    private T Data;
-    private String Message;
+    private Integer statusCode;
+    private T data;
+    private String message;
 
     public static <T> Result<T> success(T data){
         Result<T> result = new Result<>();
@@ -22,9 +22,9 @@ public class Result<T> {
         return success(null);
     }
 
-    public static <T> Result<T> error(Integer StatusCode, String message){
+    public static <T> Result<T> error(Integer statusCode, String message){
         Result<T> result = new Result<>();
-        result.setStatusCode(StatusCode);
+        result.setStatusCode(statusCode);
         result.setMessage(message);
         return result;
     }
