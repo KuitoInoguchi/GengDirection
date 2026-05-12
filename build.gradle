@@ -23,6 +23,20 @@ dependencies {
     implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:4.0.1'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.security:spring-security-crypto'
+
+    // ===== 实验四：Hadoop HDFS 客户端（与服务器 Hadoop 3.4.1 版本一致）=====
+    // 用官方 shaded 客户端（hadoop-client-api / hadoop-client-runtime），
+    // 把 Hadoop 自带的 guava/jersey/servlet 等都重定位过包名，最大限度避免与 Spring Boot 4 冲突。
+    implementation('org.apache.hadoop:hadoop-client-api:3.4.1') {
+        exclude group: 'org.slf4j'
+        exclude group: 'ch.qos.reload4j'
+        exclude group: 'org.slf4j', module: 'slf4j-reload4j'
+    }
+    runtimeOnly('org.apache.hadoop:hadoop-client-runtime:3.4.1') {
+        exclude group: 'org.slf4j'
+        exclude group: 'ch.qos.reload4j'
+        exclude group: 'org.slf4j', module: 'slf4j-reload4j'
+    }
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'com.mysql:mysql-connector-j'
     annotationProcessor 'org.projectlombok:lombok'
@@ -35,6 +49,20 @@ dependencies {
 }
 
 
+// Java 21 运行 Hadoop 客户端需要开放部分 JDK 内部模块（否则反射访问会报 InaccessibleObjectException）
+def hadoopJvmArgs = [
+        '--add-opens=java.base/java.lang=ALL-UNNAMED',
+        '--add-opens=java.base/java.nio=ALL-UNNAMED',
+        '--add-opens=java.base/java.util=ALL-UNNAMED',
+        '--add-opens=java.base/sun.nio.ch=ALL-UNNAMED',
+        '--add-opens=java.base/java.lang.reflect=ALL-UNNAMED'
+]
+
+tasks.named('bootRun') {
+    jvmArgs(hadoopJvmArgs)
+}
+
 tasks.named('test') {
     useJUnitPlatform()
+    jvmArgs(hadoopJvmArgs)
 }
