@@ -4,3 +4,8 @@ DB_URL=jdbc:mysql://localhost:3306/geng_direction?useSSL=false&serverTimezone=UT
 DB_USERNAME=root
 DB_PASSWORD=replace_with_your_password
 
+# ===== 实验四 Hadoop（可选覆盖；默认值已写在 application.properties）=====
+# HADOOP_FS=hdfs://218.194.47.8:10035
+# HADOOP_USER=root
+# 注意：HDFS 客户端读写需在 Windows hosts 文件加一行：  218.194.47.8  master
+
