@@ -1,0 +1,30 @@
+plugins {
+    id 'java'
+}
+
+group = 'com.nailong'
+version = '1.0'
+description = 'GengDirection MapReduce Jobs (实验四 处理层)'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Hadoop 依赖只在编译期需要：服务器上用 `hadoop jar` 运行时，
+    // Hadoop 自身的类路径会提供这些 jar，所以不打进我们的 jar（compileOnly）。
+    // 版本与服务器 Hadoop 3.4.1 严格一致。
+    compileOnly 'org.apache.hadoop:hadoop-client:3.4.1'
+}
+
+// 普通 jar 即可：里面只有我们自己的 Mapper/Reducer/Driver 几个类。
+// 用法：/opt/hadoop-3.4.1/bin/hadoop jar geng-mr-1.0.jar com.nailong.mr.HotPostJob <in> <out>
+tasks.named('jar') {
+    archiveBaseName = 'geng-mr'
+}
