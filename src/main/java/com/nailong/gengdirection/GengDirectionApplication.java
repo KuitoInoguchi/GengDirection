@@ -3,6 +3,7 @@ package com.nailong.gengdirection;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
  * 应用启动类。
@@ -14,6 +15,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * 这样一来，每个 Mapper 接口就算不写 @Mapper 也能被注册成 Bean。
  */
 @SpringBootApplication
+@EnableScheduling
 @MapperScan("com.nailong.gengdirection.**.mapper")
 public class GengDirectionApplication {
 

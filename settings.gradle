@@ -1,1 +1,5 @@
 rootProject.name = 'GengDirection'
+
+// 实验四：MapReduce 作业作为独立子模块，单独打 jar，
+// 与主应用完全隔离，Hadoop 依赖不会污染 Spring Boot 的 classpath。
+include 'geng-mr'

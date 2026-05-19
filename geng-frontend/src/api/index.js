@@ -38,4 +38,15 @@ export const api = {
     http.delete(`/posts/${postId}/favorite`, { params: { userId } }),
   getFavorites: (userId, pageNum = 1, pageSize = 20) =>
     http.get(`/users/${userId}/favorites`, { params: { pageNum, pageSize } }),
+
+  // ===== 实验四：大数据链路 =====
+  // 前端主动埋点上报（如帖子详情页浏览）
+  trackBehavior: (event) => http.post('/behavior/track', event),
+  // 立即把缓冲落盘到 HDFS（演示/截图用）
+  flushBehavior: () => http.post('/behavior/flush'),
+  behaviorStatus: () => http.get('/behavior/status'),
+  // 读取 MapReduce 分析结果
+  getHotPosts: (topN = 15) => http.get('/analytics/hot-posts', { params: { topN } }),
+  getActionDistribution: () => http.get('/analytics/action-distribution'),
+  analyticsStatus: () => http.get('/analytics/status'),
 }
